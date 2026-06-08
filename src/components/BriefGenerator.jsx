@@ -36,7 +36,7 @@ export default function BriefGenerator({ onGenerate, error }) {
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-500/30 rounded-full px-4 py-2 mb-6">
           <span className="w-2 h-2 bg-teal-400 rounded-full animate-pulse"></span>
-          <span className="text-teal-400 text-sm font-medium">
+          <span className="text-white/70 text-sm font-medium">
             AI Agent Running — Powered by Claude + NewsAPI
           </span>
         </div>
@@ -44,7 +44,7 @@ export default function BriefGenerator({ onGenerate, error }) {
         <h1 className="text-5xl font-extrabold text-white mb-4 leading-tight">
           Walk into every meeting
           <br />
-          <span className="text-teal-400">knowing everything.</span>
+          <span className="text-white/70">knowing everything.</span>
         </h1>
 
         <p className="text-white/80 text-xl max-w-2xl mx-auto leading-relaxed">
@@ -61,9 +61,9 @@ export default function BriefGenerator({ onGenerate, error }) {
           {
             num: "2-4h",
             label: "manual research/meeting",
-            color: "text-white-400",
+            color: "text-white/70",
           },
-          { num: "0 min", label: "with BriefAI", color: "text-white-400" },
+          { num: "0 min", label: "with BriefAI", color: "text-green-400" },
         ].map(({ num, label, color }) => (
           <div
             key={num}
@@ -91,7 +91,7 @@ export default function BriefGenerator({ onGenerate, error }) {
           {/* Company Name */}
           <div className="mb-5">
             <label className="block text-white text-sm font-semibold mb-2">
-              Company Name <span className="text-teal-400">*</span>
+              Company Name <span className="text-white/70">*</span>
             </label>
             <input
               type="text"

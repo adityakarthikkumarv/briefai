@@ -29,7 +29,7 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={onReset}
-          className="flex items-center gap-2 text-white hover:text-teal-400 transition-colors text-sm"
+          className="flex items-center gap-2 text-white hover:text-white/70 transition-colors text-sm"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -39,13 +39,13 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
         <div className="flex items-center gap-3">
           <button
             onClick={copyBrief}
-            className="flex items-center gap-2 text-white hover:text-teal-400 border border-white/30 hover:border-teal-400 px-3 py-1.5 rounded-lg text-sm transition-all"
+            className="flex items-center gap-2 text-white hover:text-white/70 border border-white/30 hover:border-teal-400 px-3 py-1.5 rounded-lg text-sm transition-all"
           >
             {copied ? "✅ Copied!" : "📋 Copy Brief"}
           </button>
           <button
             onClick={() => window.print()}
-            className="flex items-center gap-2 text-white hover:text-teal-400 border border-white/30 hover:border-teal-400 px-3 py-1.5 rounded-lg text-sm transition-all"
+            className="flex items-center gap-2 text-white hover:text-white/70 border border-white/30 hover:border-teal-400 px-3 py-1.5 rounded-lg text-sm transition-all"
           >
             🖨️ Print
           </button>
@@ -59,7 +59,7 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
         <div className="bg-gradient-to-r from-slate-900 to-slate-800 px-8 py-6 border-b border-slate-600">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <div className="text-teal-400 text-xs font-bold uppercase tracking-widest mb-2">
+              <div className="text-white/70 text-xs font-bold uppercase tracking-widest mb-2">
                 BriefAI · Pre-Meeting Intelligence
               </div>
               <h1 className="text-white text-3xl font-extrabold">{company}</h1>
@@ -85,7 +85,7 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium whitespace-nowrap transition-all border-b-2 ${
                 activeTab === tab.id
-                  ? "text-teal-400 border-teal-400 bg-teal-500/10"
+                  ? "text-white/70 border-teal-400 bg-teal-500/10"
                   : "text-white/90 border-transparent hover:text-white hover:bg-white/5"
               }`}
             >
@@ -101,7 +101,7 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
           {/* Overview */}
           {activeTab === "overview" && (
             <div className="animate-fade-in space-y-4">
-              <h2 className="text-teal-400 text-xs font-bold uppercase tracking-widest">
+              <h2 className="text-white/70 text-xs font-bold uppercase tracking-widest">
                 Company Overview
               </h2>
               <p className="text-white text-base leading-relaxed">
@@ -121,7 +121,7 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
           {/* News */}
           {activeTab === "news" && (
             <div className="animate-fade-in">
-              <h2 className="text-teal-400 text-xs font-bold uppercase tracking-widest mb-4">
+              <h2 className="text-white/70 text-xs font-bold uppercase tracking-widest mb-4">
                 Recent News — Last 30 Days
               </h2>
               {!brief?.recent_news || brief.recent_news.length === 0 ? (
@@ -151,7 +151,7 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
                           <a href={item.source_url}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-teal-400 text-xs hover:text-teal-300 transition-colors"
+                          className="text-white/70 text-xs hover:text-teal-300 transition-colors"
                         >
                           {item.source} ↗
                         </a>
@@ -168,7 +168,7 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
           {/* Financial */}
           {activeTab === "financial" && (
             <div className="animate-fade-in">
-              <h2 className="text-teal-400 text-xs font-bold uppercase tracking-widest mb-4">
+              <h2 className="text-white/70 text-xs font-bold uppercase tracking-widest mb-4">
                 Financial Signals
               </h2>
               <div className="grid grid-cols-2 gap-3 mb-4">
@@ -204,7 +204,7 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
           {/* Sentiment */}
           {activeTab === "social" && (
             <div className="animate-fade-in">
-              <h2 className="text-teal-400 text-xs font-bold uppercase tracking-widest mb-4">
+              <h2 className="text-white/70 text-xs font-bold uppercase tracking-widest mb-4">
                 Social Sentiment
               </h2>
               <div className="flex items-center gap-3 mb-5">
@@ -257,7 +257,7 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
           {/* Talking Points */}
           {activeTab === "talking" && (
             <div className="animate-fade-in">
-              <h2 className="text-teal-400 text-xs font-bold uppercase tracking-widest mb-2">
+              <h2 className="text-white/70 text-xs font-bold uppercase tracking-widest mb-2">
                 🎯 Top Talking Points
               </h2>
               <p className="text-white/80 text-xs mb-5">
@@ -297,7 +297,7 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
           </p>
           <button
             onClick={onReset}
-            className="text-teal-400 hover:text-teal-300 text-xs font-semibold transition-colors"
+            className="text-white/70 hover:text-teal-300 text-xs font-semibold transition-colors"
           >
             + New Brief
           </button>
