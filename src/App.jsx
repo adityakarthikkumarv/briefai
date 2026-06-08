@@ -10,28 +10,45 @@ export default function App() {
   const [error, setError] = useState(null)
 
   async function handleGenerate(data) {
-    setFormData(data)
-    setStage('loading')
-    setError(null)
+    setFormData(data);
+    setStage("loading");
+    setError(null);
 
     try {
-      const res = await fetch('/api/generate-brief', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/generate-brief", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      })
+      });
 
-      if (!res.ok) {
-        const err = await res.json()
-        throw new Error(err.error || 'Something went wrong. Please try again.')
+      // Read response as text first
+      const text = await res.text();
+
+      // Try to parse as JSON
+      let result;
+      try {
+        result = JSON.parse(text);
+      } catch {
+        // Response was not JSON — show the raw error
+        console.error("Raw API response:", text);
+        throw new Error(
+          text.includes("ANTHROPIC_API_KEY")
+            ? "API key not configured. Please add ANTHROPIC_API_KEY in Vercel Environment Variables."
+            : text.length > 200
+              ? "API error — check Vercel function logs for details."
+              : text || "Unknown error from server.",
+        );
       }
 
-      const result = await res.json()
-      setBrief(result)
-      setStage('result')
+      if (!res.ok) {
+        throw new Error(result?.error || `Server error: ${res.status}`);
+      }
+
+      setBrief(result);
+      setStage("result");
     } catch (err) {
-      setError(err.message)
-      setStage('home')
+      setError(err.message);
+      setStage("home");
     }
   }
 

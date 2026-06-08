@@ -1,217 +1,124 @@
-// api/generate-brief.js
+// api/generate-brief.js — Fast version (Claude only, no NewsAPI timeout)
 import Anthropic from "@anthropic-ai/sdk";
 
+function json(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
+  });
+}
+
 export default async function handler(req) {
-  if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
-      headers: { "Content-Type": "application/json" },
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
     });
+  }
+
+  if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
+
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return json(
+      { error: "ANTHROPIC_API_KEY not set in Vercel Environment Variables" },
+      500,
+    );
   }
 
   let body;
   try {
     body = await req.json();
   } catch {
-    return new Response(JSON.stringify({ error: "Invalid JSON body" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+    return json({ error: "Invalid request body" }, 400);
   }
 
   const { companyName, meetingContext, yourRole } = body;
-
-  if (!companyName?.trim()) {
-    return new Response(JSON.stringify({ error: "companyName is required" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return new Response(
-      JSON.stringify({
-        error: "ANTHROPIC_API_KEY is not set in Vercel Environment Variables.",
-      }),
-      { status: 500, headers: { "Content-Type": "application/json" } },
-    );
-  }
+  if (!companyName?.trim())
+    return json({ error: "Company name is required" }, 400);
 
   try {
-    // Fetch news with 5 second timeout
-    const newsData = await fetchNewsWithTimeout(companyName, 5000);
+    const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-    // Generate brief with Claude
-    const brief = await generateBrief(
-      companyName,
-      meetingContext || "Sales meeting",
-      yourRole || "Account Executive",
-      newsData,
-    );
-
-    return new Response(JSON.stringify(brief), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
-  } catch (err) {
-    console.error("[generate-brief] Error:", err.message);
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-}
-
-// Fetch news with a hard timeout so it never blocks Claude
-async function fetchNewsWithTimeout(companyName, timeoutMs) {
-  if (!process.env.NEWS_API_KEY) {
-    return { articles: [], note: "No NewsAPI key" };
-  }
-
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-
-    const fromDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split("T")[0];
-
-    const url = new URL("https://newsapi.org/v2/everything");
-    url.searchParams.set("q", `"${companyName}"`);
-    url.searchParams.set("from", fromDate);
-    url.searchParams.set("sortBy", "relevancy");
-    url.searchParams.set("language", "en");
-    url.searchParams.set("pageSize", "5");
-    url.searchParams.set("apiKey", process.env.NEWS_API_KEY);
-
-    const res = await fetch(url.toString(), { signal: controller.signal });
-    clearTimeout(timer);
-    const data = await res.json();
-
-    if (data.status !== "ok") return { articles: [], note: data.message };
-
-    return {
-      articles: (data.articles || []).map((a) => ({
-        headline: a.title,
-        date: a.publishedAt?.split("T")[0],
-        source: a.source?.name,
-        source_url: a.url,
-        description: a.description,
-      })),
-    };
-  } catch {
-    return {
-      articles: [],
-      note: "News fetch timed out — using Claude knowledge",
-    };
-  }
-}
-
-// Generate brief with Claude
-async function generateBrief(companyName, meetingContext, yourRole, newsData) {
-  const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-  const newsContext =
-    newsData.articles?.length > 0
-      ? `Recent news (last 30 days):\n${newsData.articles
-          .map(
-            (a, i) =>
-              `${i + 1}. ${a.headline} (${a.source}, ${a.date})\n   ${a.description || ""}`,
-          )
-          .join("\n\n")}`
-      : `No live news available. Use your training knowledge about ${companyName}.`;
-
-  const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
-    max_tokens: 1500,
-    system: `You are BriefAI, a sales intelligence analyst.
+    const response = await anthropic.messages.create({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 1024,
+      system: `You are BriefAI, a sales intelligence analyst.
 Generate a pre-meeting brief for a sales representative.
-Return ONLY valid JSON. No markdown. No explanation. Just JSON.
+Use your knowledge about the company to fill all fields.
+Return ONLY valid JSON — no markdown, no backticks, no explanation.
 
-Use this exact structure:
+Use exactly this structure:
 {
-  "company_overview": "2-sentence summary",
-  "prep_score": <50-95>,
+  "company_overview": "2-sentence summary of what the company does and current state",
+  "prep_score": 78,
   "recent_news": [
-    {
-      "headline": "...",
-      "date": "YYYY-MM-DD",
-      "source": "source name",
-      "source_url": "",
-      "significance": "why this matters for the sales rep"
-    }
+    { "headline": "...", "date": "2026-05", "source": "...", "source_url": "", "significance": "why this matters for the sales rep" },
+    { "headline": "...", "date": "2026-04", "source": "...", "source_url": "", "significance": "..." },
+    { "headline": "...", "date": "2026-03", "source": "...", "source_url": "", "significance": "..." }
   ],
   "financial_signals": {
-    "stage": "e.g. Private/Series B/Public",
+    "stage": "e.g. Series B / Public / Private",
     "last_funding": "amount and year or Unknown",
     "revenue_estimate": "range or Unknown",
     "growth_signal": "Positive or Neutral or Negative",
-    "employees": "approximate number",
-    "ceo": "CEO name",
-    "description": "one sentence about business model"
+    "employees": "approximate headcount",
+    "ceo": "CEO full name",
+    "description": "one sentence about their business model"
   },
   "social_signals": {
     "overall_tone": "Bullish or Cautious or Under Pressure",
     "key_themes": ["theme1", "theme2", "theme3"],
     "notable_post": {
-      "author": "Name, Title",
-      "content_summary": "what they posted about",
+      "author": "Executive Name, Title",
+      "content_summary": "what they have been talking about publicly",
       "significance": "why this matters for the sales rep"
     }
   },
   "top_talking_points": [
-    "Evidence-based talking point 1",
-    "Evidence-based talking point 2",
-    "Evidence-based talking point 3"
+    "Specific opening line referencing a real company signal",
+    "Second specific evidence-based talking point",
+    "Third specific talking point tied to their current priorities"
   ],
   "deal_risk_flags": [],
-  "data_freshness": "Last 30 days",
+  "data_freshness": "Based on Claude training knowledge",
   "generated_at": "${new Date().toISOString()}"
 }`,
-    messages: [
-      {
-        role: "user",
-        content: `Company: ${companyName}
-Meeting: ${meetingContext}
-My role: ${yourRole}
+      messages: [
+        {
+          role: "user",
+          content: `Generate a meeting brief for:
+Company: ${companyName.trim()}
+Meeting: ${meetingContext || "Sales discovery call"}
+My role: ${yourRole || "Account Executive"}
 
-${newsContext}
-
-Generate the meeting brief as JSON now.`,
-      },
-    ],
-  });
-
-  const raw = response.content
-    .filter((b) => b.type === "text")
-    .map((b) => b.text)
-    .join("")
-    .trim()
-    .replace(/^```json\s*/i, "")
-    .replace(/^```\s*/, "")
-    .replace(/\s*```$/, "")
-    .trim();
-
-  const parsed = JSON.parse(raw);
-
-  // Inject real source URLs from NewsAPI
-  if (parsed.recent_news && newsData.articles?.length > 0) {
-    parsed.recent_news = parsed.recent_news.map((item) => {
-      const match = newsData.articles.find((a) =>
-        a.headline
-          ?.toLowerCase()
-          .includes(item.headline?.toLowerCase().slice(0, 20)),
-      );
-      return {
-        ...item,
-        source_url: match?.source_url || "",
-        source: match?.source || item.source || "",
-      };
+Return only the JSON.`,
+        },
+      ],
     });
-  }
 
-  return parsed;
+    const raw = response.content
+      .filter((b) => b.type === "text")
+      .map((b) => b.text)
+      .join("")
+      .trim()
+      .replace(/^```json\s*/i, "")
+      .replace(/^```\s*/, "")
+      .replace(/\s*```$/, "")
+      .trim();
+
+    const brief = JSON.parse(raw);
+    return json(brief);
+  } catch (err) {
+    console.error("[BriefAI Error]", err.message);
+    return json(
+      { error: err.message || "Failed to generate brief. Please try again." },
+      500,
+    );
+  }
 }
