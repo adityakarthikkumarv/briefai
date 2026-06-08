@@ -31,8 +31,18 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
           onClick={onReset}
           className="flex items-center gap-2 text-white hover:text-white/70 transition-colors text-sm"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           New Brief
         </button>
@@ -54,7 +64,6 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
 
       {/* Card */}
       <div className="bg-slate-800 border border-slate-600 rounded-3xl overflow-hidden shadow-2xl">
-
         {/* Header */}
         <div className="bg-gradient-to-r from-slate-900 to-slate-800 px-8 py-6 border-b border-slate-600">
           <div className="flex items-start justify-between gap-4">
@@ -97,7 +106,6 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
 
         {/* Tab Content */}
         <div className="p-8">
-
           {/* Overview */}
           {activeTab === "overview" && (
             <div className="animate-fade-in space-y-4">
@@ -109,9 +117,13 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
               </p>
               {brief?.deal_risk_flags?.length > 0 && (
                 <div className="p-4 bg-red-900/40 border border-red-400/50 rounded-2xl">
-                  <p className="text-red-300 font-bold text-sm mb-2">⚠️ Deal Risk Flags</p>
+                  <p className="text-red-300 font-bold text-sm mb-2">
+                    ⚠️ Deal Risk Flags
+                  </p>
                   {brief.deal_risk_flags.map((flag, i) => (
-                    <p key={i} className="text-red-200 text-sm leading-relaxed">• {flag}</p>
+                    <p key={i} className="text-red-200 text-sm leading-relaxed">
+                      • {flag}
+                    </p>
                   ))}
                 </div>
               )}
@@ -127,12 +139,17 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
               {!brief?.recent_news || brief.recent_news.length === 0 ? (
                 <div className="text-center py-8">
                   <span className="text-4xl block mb-3">📭</span>
-                  <p className="text-white opacity-80">No significant news found.</p>
+                  <p className="text-white opacity-80">
+                    No significant news found.
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {brief.recent_news.map((item, i) => (
-                    <div key={i} className="p-4 bg-white/5 rounded-2xl border border-white/10">
+                    <div
+                      key={i}
+                      className="p-4 bg-white/5 rounded-2xl border border-white/10"
+                    >
                       <div className="flex items-start justify-between gap-3 mb-2">
                         <p className="text-white font-semibold text-sm leading-snug">
                           {item.headline}
@@ -147,8 +164,8 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
                         </p>
                       )}
                       {item.source_url ? (
-                        
-                          <a href={item.source_url}
+                        <a
+                          href={item.source_url}
                           target="_blank"
                           rel="noreferrer"
                           className="text-white/70 text-xs hover:text-teal-300 transition-colors"
@@ -156,7 +173,9 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
                           {item.source} ↗
                         </a>
                       ) : (
-                        <span className="text-white/70 text-xs">{item.source}</span>
+                        <span className="text-white/70 text-xs">
+                          {item.source}
+                        </span>
                       )}
                     </div>
                   ))}
@@ -175,24 +194,34 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
                 {[
                   ["Funding Stage", brief?.financial_signals?.stage],
                   ["Last Funding", brief?.financial_signals?.last_funding],
-                  ["Revenue Estimate", brief?.financial_signals?.revenue_estimate],
+                  [
+                    "Revenue Estimate",
+                    brief?.financial_signals?.revenue_estimate,
+                  ],
                   ["Growth Signal", brief?.financial_signals?.growth_signal],
                   ["Employees", brief?.financial_signals?.employees],
                   ["CEO", brief?.financial_signals?.ceo],
                 ]
                   .filter(([, v]) => v && v !== "Unknown")
                   .map(([label, value]) => (
-                    <div key={label} className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <div
+                      key={label}
+                      className="bg-white/5 rounded-2xl p-4 border border-white/10"
+                    >
                       <div className="text-white/80 text-xs uppercase tracking-wide mb-1">
                         {label}
                       </div>
-                      <div className="text-white font-semibold text-sm">{value}</div>
+                      <div className="text-white font-semibold text-sm">
+                        {value}
+                      </div>
                     </div>
                   ))}
               </div>
               {brief?.financial_signals?.description && (
                 <div className="p-4 bg-white/5 rounded-2xl border border-white/10">
-                  <div className="text-white/80 text-xs uppercase tracking-wide mb-2">About</div>
+                  <div className="text-white/80 text-xs uppercase tracking-wide mb-2">
+                    About
+                  </div>
                   <p className="text-white text-sm leading-relaxed">
                     {brief.financial_signals.description}
                   </p>
@@ -208,14 +237,16 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
                 Social Sentiment
               </h2>
               <div className="flex items-center gap-3 mb-5">
-                <span className="text-white text-sm font-medium">Overall Tone:</span>
+                <span className="text-white text-sm font-medium">
+                  Overall Tone:
+                </span>
                 <span
                   className={`font-bold text-sm px-4 py-1.5 rounded-full border ${
                     brief?.social_signals?.overall_tone === "Bullish"
                       ? "bg-green-500/20 text-green-300 border-green-400/50"
                       : brief?.social_signals?.overall_tone === "Under Pressure"
-                      ? "bg-red-500/20 text-red-300 border-red-400/50"
-                      : "bg-amber-500/20 text-white/90 border-amber-400/50"
+                        ? "bg-red-500/20 text-red-300 border-red-400/50"
+                        : "bg-amber-500/20 text-white/90 border-amber-400/50"
                   }`}
                 >
                   {brief?.social_signals?.overall_tone || "Neutral"}
@@ -223,7 +254,9 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
               </div>
               {brief?.social_signals?.key_themes?.length > 0 && (
                 <div className="mb-5">
-                  <p className="text-white/80 text-xs uppercase tracking-wide mb-3">Key Themes</p>
+                  <p className="text-white/80 text-xs uppercase tracking-wide mb-3">
+                    Key Themes
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {brief.social_signals.key_themes.map((theme, i) => (
                       <span
@@ -238,15 +271,17 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
               )}
               {brief?.social_signals?.notable_post && (
                 <div className="p-4 bg-teal-900/40 border border-teal-400/30 rounded-2xl">
-                  <p className="text-teal-300 font-bold text-xs mb-2">
-                    📌 Notable Activity — {brief.social_signals.notable_post.author}
+                  <p className="text-red-300 font-bold text-xs mb-2">
+                    📌 Notable Activity —{" "}
+                    {brief.social_signals.notable_post.author}
                   </p>
                   <p className="text-white text-sm leading-relaxed mt-1">
                     {brief.social_signals.notable_post.content_summary}
                   </p>
                   {brief.social_signals.notable_post.significance && (
                     <p className="text-white/90 text-xs mt-2 italic">
-                      Why it matters: {brief.social_signals.notable_post.significance}
+                      Why it matters:{" "}
+                      {brief.social_signals.notable_post.significance}
                     </p>
                   )}
                 </div>
@@ -273,21 +308,26 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
                       <div className="w-8 h-8 bg-teal-500 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white text-sm">
                         {i + 1}
                       </div>
-                      <p className="text-white text-sm leading-relaxed pt-1">{point}</p>
+                      <p className="text-white text-sm leading-relaxed pt-1">
+                        {point}
+                      </p>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-white/80 text-sm">No talking points generated.</p>
+                <p className="text-white/80 text-sm">
+                  No talking points generated.
+                </p>
               )}
               <div className="mt-5 p-4 bg-amber-900/30 border border-amber-400/30 rounded-2xl">
                 <p className="text-white/90 text-xs leading-relaxed">
-                  ⚡ <strong>Tip:</strong> Always verify critical data before the meeting. These are generated by Claude AI.
+                  ⚡ <strong>Tip:</strong> Always verify critical data before
+                  the meeting. Insights are sourced from live news feeds and
+                  financial APIs.
                 </p>
               </div>
             </div>
           )}
-
         </div>
 
         {/* Footer */}
@@ -302,7 +342,6 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
             + New Brief
           </button>
         </div>
-
       </div>
     </div>
   );
