@@ -38,7 +38,7 @@ React 18 · Vite · Tailwind CSS · Anthropic Claude · Vercel
 
 ## Team
 
-Aditya Karthik Kumar Vummadisingu · Harshita Pendyala · Diksha Ahuja
-Karan Kumar · Ishita Seth · Shruti Dudhe
+Aditya Karthik Kumar Vummadisingu · Shruti Dudhe · Ishita Seth · 
+Karan Kumar · Diksha Ahuja · Harshita Pendyala
 
 *BITSoM × Masai School | PS4 Capstone*
