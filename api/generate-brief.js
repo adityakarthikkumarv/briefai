@@ -46,7 +46,7 @@ export default async function handler(req) {
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 1024,
       system: `You are BriefAI, a sales intelligence analyst.
 Generate a pre-meeting brief for a sales representative.
