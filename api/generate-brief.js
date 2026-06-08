@@ -52,36 +52,27 @@ export default async function handler(req) {
 
     const response = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 700,
-      system: `You are a sales intelligence analyst. Generate a meeting brief.
-Return ONLY valid JSON. No markdown. No backticks. Just JSON.
+      max_tokens: 1200,
+      system: `You are a sales analyst. Generate a meeting brief as JSON only.
+No markdown. No backticks. Return pure JSON.
+
 {
-  "company_overview": "2 sentences about the company",
+  "company_overview": "2 sentences",
   "prep_score": 75,
   "recent_news": [
     {"headline":"...","date":"2026-05","source":"...","source_url":"","significance":"..."},
-    {"headline":"...","date":"2026-04","source":"...","source_url":"","significance":"..."},
-    {"headline":"...","date":"2026-03","source":"...","source_url":"","significance":"..."}
+    {"headline":"...","date":"2026-04","source":"...","source_url":"","significance":"..."}
   ],
   "financial_signals": {
-    "stage":"Series B or Public etc",
-    "last_funding":"amount and year",
-    "revenue_estimate":"range",
-    "growth_signal":"Positive",
-    "employees":"500-1000",
-    "ceo":"CEO Name",
-    "description":"one sentence business model"
+    "stage":"...","last_funding":"...","revenue_estimate":"...",
+    "growth_signal":"Positive","employees":"...","ceo":"...","description":"..."
   },
   "social_signals": {
     "overall_tone":"Bullish",
-    "key_themes":["theme1","theme2","theme3"],
-    "notable_post":{"author":"Name, Title","content_summary":"...","significance":"..."}
+    "key_themes":["theme1","theme2"],
+    "notable_post":{"author":"...","content_summary":"...","significance":"..."}
   },
-  "top_talking_points": [
-    "Specific talking point 1",
-    "Specific talking point 2",
-    "Specific talking point 3"
-  ],
+  "top_talking_points": ["point 1","point 2","point 3"],
   "deal_risk_flags": [],
   "data_freshness": "Claude training knowledge",
   "generated_at": "${new Date().toISOString()}"
