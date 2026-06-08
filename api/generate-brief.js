@@ -1,15 +1,8 @@
-// api/generate-brief.js — Fast version (Claude only, no NewsAPI timeout)
+// api/generate-brief.js — Edge Runtime (25s timeout on Hobby plan)
 import Anthropic from "@anthropic-ai/sdk";
 
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
-  });
-}
+// Edge runtime = 25s timeout vs Node.js 10s timeout
+export const config = { runtime: "edge" };
 
 export default async function handler(req) {
   if (req.method === "OPTIONS") {
@@ -22,12 +15,19 @@ export default async function handler(req) {
     });
   }
 
-  if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 
   if (!process.env.ANTHROPIC_API_KEY) {
-    return json(
-      { error: "ANTHROPIC_API_KEY not set in Vercel Environment Variables" },
-      500,
+    return new Response(
+      JSON.stringify({
+        error: "ANTHROPIC_API_KEY not set in Vercel Environment Variables",
+      }),
+      { status: 500, headers: { "Content-Type": "application/json" } },
     );
   }
 
@@ -35,69 +35,64 @@ export default async function handler(req) {
   try {
     body = await req.json();
   } catch {
-    return json({ error: "Invalid request body" }, 400);
+    return new Response(JSON.stringify({ error: "Invalid body" }), {
+      status: 400,
+    });
   }
 
   const { companyName, meetingContext, yourRole } = body;
-  if (!companyName?.trim())
-    return json({ error: "Company name is required" }, 400);
+  if (!companyName?.trim()) {
+    return new Response(JSON.stringify({ error: "Company name required" }), {
+      status: 400,
+    });
+  }
 
   try {
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
     const response = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 1024,
-      system: `You are BriefAI, a sales intelligence analyst.
-Generate a pre-meeting brief for a sales representative.
-Use your knowledge about the company to fill all fields.
-Return ONLY valid JSON — no markdown, no backticks, no explanation.
-
-Use exactly this structure:
+      max_tokens: 700,
+      system: `You are a sales intelligence analyst. Generate a meeting brief.
+Return ONLY valid JSON. No markdown. No backticks. Just JSON.
 {
-  "company_overview": "2-sentence summary of what the company does and current state",
-  "prep_score": 78,
+  "company_overview": "2 sentences about the company",
+  "prep_score": 75,
   "recent_news": [
-    { "headline": "...", "date": "2026-05", "source": "...", "source_url": "", "significance": "why this matters for the sales rep" },
-    { "headline": "...", "date": "2026-04", "source": "...", "source_url": "", "significance": "..." },
-    { "headline": "...", "date": "2026-03", "source": "...", "source_url": "", "significance": "..." }
+    {"headline":"...","date":"2026-05","source":"...","source_url":"","significance":"..."},
+    {"headline":"...","date":"2026-04","source":"...","source_url":"","significance":"..."},
+    {"headline":"...","date":"2026-03","source":"...","source_url":"","significance":"..."}
   ],
   "financial_signals": {
-    "stage": "e.g. Series B / Public / Private",
-    "last_funding": "amount and year or Unknown",
-    "revenue_estimate": "range or Unknown",
-    "growth_signal": "Positive or Neutral or Negative",
-    "employees": "approximate headcount",
-    "ceo": "CEO full name",
-    "description": "one sentence about their business model"
+    "stage":"Series B or Public etc",
+    "last_funding":"amount and year",
+    "revenue_estimate":"range",
+    "growth_signal":"Positive",
+    "employees":"500-1000",
+    "ceo":"CEO Name",
+    "description":"one sentence business model"
   },
   "social_signals": {
-    "overall_tone": "Bullish or Cautious or Under Pressure",
-    "key_themes": ["theme1", "theme2", "theme3"],
-    "notable_post": {
-      "author": "Executive Name, Title",
-      "content_summary": "what they have been talking about publicly",
-      "significance": "why this matters for the sales rep"
-    }
+    "overall_tone":"Bullish",
+    "key_themes":["theme1","theme2","theme3"],
+    "notable_post":{"author":"Name, Title","content_summary":"...","significance":"..."}
   },
   "top_talking_points": [
-    "Specific opening line referencing a real company signal",
-    "Second specific evidence-based talking point",
-    "Third specific talking point tied to their current priorities"
+    "Specific talking point 1",
+    "Specific talking point 2",
+    "Specific talking point 3"
   ],
   "deal_risk_flags": [],
-  "data_freshness": "Based on Claude training knowledge",
+  "data_freshness": "Claude training knowledge",
   "generated_at": "${new Date().toISOString()}"
 }`,
       messages: [
         {
           role: "user",
-          content: `Generate a meeting brief for:
-Company: ${companyName.trim()}
-Meeting: ${meetingContext || "Sales discovery call"}
-My role: ${yourRole || "Account Executive"}
-
-Return only the JSON.`,
+          content: `Company: ${companyName.trim()}
+Meeting: ${meetingContext || "Sales call"}
+Role: ${yourRole || "Account Executive"}
+Return JSON only.`,
         },
       ],
     });
@@ -113,12 +108,25 @@ Return only the JSON.`,
       .trim();
 
     const brief = JSON.parse(raw);
-    return json(brief);
+
+    return new Response(JSON.stringify(brief), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
   } catch (err) {
-    console.error("[BriefAI Error]", err.message);
-    return json(
-      { error: err.message || "Failed to generate brief. Please try again." },
-      500,
+    console.error("[BriefAI]", err.message);
+    return new Response(
+      JSON.stringify({ error: err.message || "Failed to generate brief" }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      },
     );
   }
 }
