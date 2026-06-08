@@ -1,7 +1,8 @@
 {
   "name": "briefai-demo",
   "version": "1.0.0",
-  "description": "BriefAI — AI-Powered Pre-Meeting Sales Intelligence Agent (Working Demo)",
+  "type": "module",
+  "description": "BriefAI — AI-Powered Pre-Meeting Sales Intelligence",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -9,7 +10,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.0",
-    "node-fetch": "^3.3.2"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
