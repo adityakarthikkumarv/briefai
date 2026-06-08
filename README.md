@@ -4,7 +4,7 @@
 
 BITSoM × Masai School | Product Management with Generative & Agentic AI | Batch 2 | Problem Statement 4
 
-**Live Demo:** https://briefai-eight.vercel.app
+**Live Demo:** https://briefai-aditya.vercel.app/
 
 ---
 
