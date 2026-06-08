@@ -64,13 +64,18 @@ export default function App() {
       {/* Nav */}
       <nav className="border-b border-slate-700/50 px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <button onClick={handleReset} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          <button
+            onClick={handleReset}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          >
             <div className="w-9 h-9 bg-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/30">
               <span className="text-white font-bold text-lg">B</span>
             </div>
             <div>
               <span className="text-white font-bold text-lg">BriefAI</span>
-              <span className="text-slate-400 text-xs block leading-none">Sales Intelligence</span>
+              <span className="text-slate-400 text-xs block leading-none">
+                Sales Intelligence
+              </span>
             </div>
           </button>
 
@@ -80,7 +85,7 @@ export default function App() {
               Powered by Claude AI
             </span>
             <a
-              href="https://github.com/adityakarthik/briefai-demo"
+              href="https://github.com/adityakarthikkumarv/briefai"
               target="_blank"
               rel="noreferrer"
               className="text-slate-400 hover:text-white transition-colors text-sm border border-slate-600 px-3 py-1.5 rounded-lg hover:border-slate-400"
@@ -93,13 +98,13 @@ export default function App() {
 
       {/* Main Content */}
       <main className="max-w-5xl mx-auto px-6 py-12">
-        {stage === 'home' && (
+        {stage === "home" && (
           <BriefGenerator onGenerate={handleGenerate} error={error} />
         )}
-        {stage === 'loading' && (
+        {stage === "loading" && (
           <LoadingState company={formData?.companyName} />
         )}
-        {stage === 'result' && brief && (
+        {stage === "result" && brief && (
           <BriefDisplay
             brief={brief}
             company={formData?.companyName}
@@ -116,13 +121,23 @@ export default function App() {
             BriefAI — PS4 Capstone Project | BITSoM × Masai School | Batch 2
           </p>
           <p className="mt-1 text-xs">
-            Built with{' '}
-            <a href="https://anthropic.com" className="text-teal-400 hover:underline">Anthropic Claude</a>
-            {' '}· Deployed on{' '}
-            <a href="https://vercel.com" className="text-teal-400 hover:underline">Vercel</a>
+            Built with{" "}
+            <a
+              href="https://anthropic.com"
+              className="text-teal-400 hover:underline"
+            >
+              Anthropic Claude
+            </a>{" "}
+            · Deployed on{" "}
+            <a
+              href="https://vercel.com"
+              className="text-teal-400 hover:underline"
+            >
+              Vercel
+            </a>
           </p>
         </div>
       </footer>
     </div>
-  )
+  );
 }
