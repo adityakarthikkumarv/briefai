@@ -49,7 +49,7 @@ export default function BriefGenerator({ onGenerate, error }) {
 
         <p className="text-white/80 text-xl max-w-2xl mx-auto leading-relaxed">
           Enter a company name. BriefAI researches it from live news and
-          financial data, then Claude AI generates your 1-page meeting brief in
+          financial data, then Agentic AI generates your 1-page meeting brief in
           seconds.
         </p>
       </div>
@@ -158,7 +158,7 @@ export default function BriefGenerator({ onGenerate, error }) {
           </button>
 
           <p className="text-white/60 text-xs text-center mt-4">
-            Searches real news + financial data · Powered by Claude AI · Takes
+            Searches real news + financial data · Powered by Agentic AI · Takes
             ~10 seconds
           </p>
         </form>
@@ -193,7 +193,7 @@ export default function BriefGenerator({ onGenerate, error }) {
             {
               icon: "🤖",
               step: "2",
-              title: "Claude Analyses",
+              title: "Agentic AI Analyses",
               desc: "Synthesises data into structured brief with talking points",
             },
             {

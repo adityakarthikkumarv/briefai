@@ -82,7 +82,7 @@ export default function App() {
           <div className="flex items-center gap-4">
             <span className="hidden sm:flex items-center gap-2 text-slate-400 text-sm">
               <span className="w-2 h-2 bg-teal-400 rounded-full animate-pulse"></span>
-              Powered by Claude AI
+              Powered by Agentic AI
             </span>
             <a
               href="https://github.com/adityakarthikkumarv/briefai"

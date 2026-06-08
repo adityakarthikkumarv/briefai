@@ -78,7 +78,7 @@ export default function BriefDisplay({ brief, company, meeting, onReset }) {
               <div className="flex items-center gap-2 mt-3">
                 <span className="w-2 h-2 bg-teal-400 rounded-full animate-pulse" />
                 <span className="text-white text-xs opacity-90">
-                  {brief?.data_freshness || "Claude AI knowledge"}
+                  {brief?.data_freshness || "Agentic AI knowledge"}
                 </span>
               </div>
             </div>

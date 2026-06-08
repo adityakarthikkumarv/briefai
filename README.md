@@ -10,7 +10,7 @@ BITSoM × Masai School | Product Management with Generative & Agentic AI | Batch
 
 ## What It Does
 
-Enter a company name → BriefAI researches it using Claude AI → Get a 1-page meeting brief in seconds.
+Enter a company name → BriefAI researches it using Agentic AI → Get a 1-page meeting brief in seconds.
 
 Built with React 18 + Vite + Anthropic Claude + Vercel
 

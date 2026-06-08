@@ -4,7 +4,7 @@ const STEPS = [
   { icon: '📰', label: 'Searching recent news...', detail: 'Fetching last 30 days of company news' },
   { icon: '💰', label: 'Pulling financial data...', detail: 'Revenue, funding stage, growth signals' },
   { icon: '💼', label: 'Scanning LinkedIn activity...', detail: 'Executive posts and company updates' },
-  { icon: '🤖', label: 'Claude AI is writing your brief...', detail: 'Synthesising all data into talking points' },
+  { icon: '🤖', label: 'Agentic AI is writing your brief...', detail: 'Synthesising all data into talking points' },
   { icon: '✅', label: 'Brief ready!', detail: 'Your meeting prep is complete' },
 ]
 
@@ -43,7 +43,7 @@ export default function LoadingState({ company }) {
         Researching {company}{dots}
       </h2>
       <p className="text-slate-400 text-sm mb-10">
-        Claude AI is searching real news and financial data — this takes about 10 seconds
+        Agentic AI is searching real news and financial data — this takes about 10 seconds
       </p>
 
       {/* Steps */}
