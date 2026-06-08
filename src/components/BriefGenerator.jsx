@@ -61,9 +61,9 @@ export default function BriefGenerator({ onGenerate, error }) {
           {
             num: "2-4h",
             label: "manual research/meeting",
-            color: "text-amber-400",
+            color: "text-white-400",
           },
-          { num: "0 min", label: "with BriefAI", color: "text-teal-400" },
+          { num: "0 min", label: "with BriefAI", color: "text-white-400" },
         ].map(({ num, label, color }) => (
           <div
             key={num}
