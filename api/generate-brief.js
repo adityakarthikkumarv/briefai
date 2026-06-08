@@ -5,7 +5,7 @@
 
 import Anthropic from '@anthropic-ai/sdk'
 
-export const config = { runtime: 'edge' }   // Use edge runtime for speed
+//export const config = { runtime: 'edge' }   // Use edge runtime for speed
 
 export default async function handler(req) {
   // Only allow POST requests
